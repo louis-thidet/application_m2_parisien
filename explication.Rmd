@@ -1,0 +1,123 @@
+---
+title: ""
+metadata title: "THIDET_Louis_Exo2"
+author: "Louis THIDET"
+output: html_notebook
+---
+
+<h4>
+  Louis THIDET
+</h4>
+<center>
+  ![](img/Universite_Paris-Cite-logo.jpeg){width="35%"}
+</center>
+<center>
+  <h2>
+    Datamining : Devoir numéro 2
+  </h2>
+</center>
+<center>
+  <h4>
+    Visualisation de la distribution du prix du m² par commune entre 2014 et 2021 sur Shiny
+  </h4>
+</center>
+
+<br>
+
+### Introduction
+Ce document restitue la démarche de construction d'une application Shiny servant à visualiser la distribution du prix du m² par commune dans le Grand Paris. Il est composé de trois parties. La première présente le fichier de données qui a été utilisé pour produire l'application Shiny, et ce qui a été fait pour le nettoyer, la seconde concerne le chargement des données, et la troisième concerne la réalisation de l'application.
+
+**Remarque** : c'est le prix du m² médian par commune qui est retenu, et non le prix moyen, parce qu'il s'agit d'un indicateur plus robuste.
+
+```{r}
+install.packages("Cairo")
+## Pour que les graphiques produits dans l'application Shiny soient de meilleure qualité, il est possible d'installer le package Cairo. Il n'est ensuite pas nécessaire de le démarrer, il suffit seulement qu'il soit installé dans R.
+```
+
+## **1. Description et préparation des données**
+
+------------------------------------------------------------------------
+
+<h4> **1. Présentation des données** </h4>
+
+Le fichier [dvfclean_V3.RDS](https://moodle.u-paris.fr/pluginfile.php/1187292/mod_assign/introattachment/0/Shiny_carto_dvf.zip?forcedownload=1) utilisé dans le cadre de l'application Shiny est extrait de la base de données **Demande de valeurs foncières**, qui est produite et mise à disposition par la Direction générale des finances publiques, et permet de connaître les transactions immobilières survenues en France à une période donnée. Le fichier concerne uniquement les ventes d'appartements et de maisons qui ont eu lieu dans les départements 75, 92, 93 et 94 entre 2014 et 2021 et son champ est restreint aux mutations monoventes. Il s'agit d'un jeu de données composé de 11 variables et de 261 848 observations.
+
+<h4> **2. Liste des variables** </h4>
+  
+-   **id** : identifiant unique de chaque vente
+-   **ann** : année de vente
+-   **code** : code INSEE de la commune où est localisé un bien vendu
+-   **nom** : nom de la commune où est localisé un bien vendu
+-   **type** : indique si un bien vendu est une maison ou un appartement
+-   **surf** : surface en m²
+-   **nbp** : Nombre de pièces
+-   **prix** : prix de vente du bien
+-   **prixm2** : prix du m² de la vente
+-   **dep** : département où se trouve le bien vendu
+
+<h4> **3. Nettoyage des données** </h4>
+
+Le nettoyage des données a consisté à retirer toutes les observations dont le prix du m² était inférieur à 2000, parce qu'un tel prix du m² dans le Grand Paris est très peu vraisemblable.
+
+**Remarque** : Les lignes comportant des valeurs aberrantes ou impossibles, comme par exemple un nombre de pièces à 0 n'ont pas été nettoyées, parce que les variables qui les portent sont inutiles dans le cadre de ce travail, et sont des erreurs. Elles n'impliquent en rien le prix des logements.
+
+## **2. Chargement des données**
+
+------------------------------------------------------------------------
+
+Deux fonctions ont été créées ; la première permet de charger et nettoyer le fichier de données, tandis que la seconde permet de produire des tables agrégées à partir des données chargées. La seconde fonction prend en argument des variables et donne le nombre de ventes de logements et le prix médian du m² en fonction de celles-ci.
+
+*Les fonctions sont situées dans le fichier fonctions.R, qui est chargé au début de l'application Shiny. Celui-ci est rangé dans le sous-dossier pgm du projet R.*
+
+L'application Shiny charge les données à partir des fonctions, puis elle charge ensuite les fonds de carte des communes et départements du Grand Paris.
+
+## **3. Réalisation de l'application Shiny**
+
+------------------------------------------------------------------------
+
+<h4> **1. Ce qui a été fait** </h4>
+
+La visualisation de la distribution du prix du m² par commune dans le Grand Paris entre 2014 et 2021 se fait principalement par le biais d'une carte et d'un histogramme configurables.
+
+La carte de l'application permet de visualiser différentes classes dans lesquelles le prix du m² médian de chaque commune est rangé, tandis que l'histogramme permet de voir la densité de ces classes, et donc de savoir, par exemple, si les communes dont le prix du m² médian est entre 4000 et 6000 euros sont plus fréquentes que celles dont le prix du m² médian est entre 10 000 et 12 000 euros. Chaque barre de l'histogramme correspond à une classe de la carte, et les couleurs de la carte et de l'histogramme sont synchronisées.
+
+Sur l'histogramme se superpose une boite à moustache. Elle permet de voir s'il y a des communes dont le prix du m² médian est particulièrement élevé, et de connaître la médiane des prix du m² médian des communes. Notons que cette valeur n'est pas identique au prix du m² médian dans le Grand Paris, qui est affiché sur l'application dans un encadré. Le prix du m² médian dans le Grand Paris n'est pas la médiane des prix du m² médian des communes (cette valeur désigne le prix du m² médian d'une commune), mais la médiane de la distribution des prix du m² de tous les logements du Grand Paris.
+
+La carte et l'histogramme de l'application sont configurables en fonction de deux types de paramètre. Il y a des paramètres qui modifient les données utilisées, et des paramètres qui modifient la carte et l'histogramme sans modifier les données. La nuance est importante, parce que les données chargées dans l'application sont consultables et téléchargeables. Des boutons sont à disposition de l'utilisateur pour que celui-ci puisse télécharger les données, et une section "Tableaux de données" permet de les consulter. Quatre tableaux de données sont disponibles :
+
+- Un tableau comportant les données chargées dans la carte et l'histogramme. Il est mis à jour lorsque sont changées les "paramètres des données"
+- Un tableau comportant les prix du m² médian par commune (par année et type de logement)
+- Un tableau comportant les prix du m² médian dans le Grand Paris (par année et type de logement)
+- Un tableau comportant les données brutes
+
+**Le paramétrage des données**
+
+- L'utilisateur peut sélectionner le type de logement dont il veut consulter les données : les appartements, les maisons, ou les deux types en même temps.
+- Pour un maximum de précision, deux échelles sont disponibles pour afficher la carte : Grand Paris et département du Grand Paris. Si l'utilisateur sélectionne un département, une carte de celui-ci apparaît ; ce sont alors uniquement les données des communes du département sélectionné qui sont affichées.
+- Les données affichées sont celles de l'année sélectionnée
+
+**Le paramétrage de la carte**
+
+- L'utilisateur peut choisir d'afficher ou de cacher le nombre de ventes par commune. C'est un paramètre utile, puisqu'il permet de quantifier les types de logement et de mieux comprendre leur prix du m² médian. ça permet par exemple de voir que les maisons se vendent en-dehors des départements les plus chers ; de voir pourquoi, en dépit du fait que les maisons soient généralement plus chères que les appartements, le prix du m² médian des appartements dans le Grand Paris est plus élevé que celui des maisons.
+- L'utilisateur peut choisir la méthode de discrétisation qui lui convient, entre les jenks, les effectifs égaux ou les amplitudes égales. Il peut aussi choisir le nombre de classes de la carte.
+- Les couleurs de de la carte et de l'histogramme sont également configurables (choix entre des palettes d'orange, de rouge, de vert ou de bleu).
+
+*L'application Shiny se trouve enregistrée dans le fichier app.R*
+
+<h4> **2. Les améliorations qui n'ont pas été achevées** </h4>
+
+On a essayé d'améliorer l'application en y ajoutant la possibilité de visualiser une carte montrant une commune seule, mais on n'a pas retenu cette fonctionnalité.
+
+*L'essai d'amélioration est néanmoins enregistré, dans le fichier intitulé essai_amelioration.R*
+
+Cette fonctionnalité aurait eu deux possibles intérêts :
+
+**On ne disposait par des données des IRIS**
+
+Visualiser une commune seule aurait permis, si on avait disposé des données des IRIS, de créer une nouvelle échelle de carte choroplète, plus petite que celle du département, pour apprécier la distribution du prix médian du m².
+
+**Impossibilité d'appliquer la classe d'une échelle plus grande à la visualisation de la commune seule**
+
+Autrement, on aurait pu visualiser une commune seule en lui appliquant la couleur qui est appliquée à sa classe dans la carte à l'échelle départementale, mais on n'y est pas parvenu. Or, visualiser la commune avec une mauvaise couleur de classe a peu d'intérêt et peut induire en erreur. Autant dans ce cas aller consulter les tableaux des données.
+
+<br>

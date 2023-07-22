@@ -1,0 +1,90 @@
+    .custom-main-panel {
+      background-color: transparent !important;
+    }
+    #title {
+      font-weight: bold;
+    }
+    .case1 {
+      background-color: #d8f4fc;
+      font-family: system-ui;
+      border-radius: 10px;
+      text-align: center;
+      font-size:25px;
+      color:#4298f5;
+      font-weight: bold;
+      margin-bottom:10px; 
+      padding-top:10px; 
+      padding-bottom:10px;
+    }
+    #histwhiskersPlot {
+      border-radius:10px;
+    }
+    .case2 {
+      font-family: Geneva, Verdana, sans-serif;
+      border-radius: 10px;
+      text-align: center;
+      font-size:20px;
+      background-color:#4298f5;
+      color: white;
+      font-weight: bold;
+      padding-top:30px;
+      padding-bottom:30px;
+    }
+    .remarque {
+      margin-top:10px;
+      font-size:12px;
+    }
+    .style_btn_orange {
+      background-color:orange!important;
+      padding:20px;
+    }
+    .style_btn_rouge {
+      background-color:red!important;
+      padding:20px;
+    }
+    .style_btn_vert {
+      background-color:green!important;
+      padding:20px;
+    }
+    .style_btn_bleu {
+      background-color:#08519c!important;
+      padding:20px;
+    }
+    #affichage_ventes {
+      display: none;
+    }
+    #couleur_legende {
+      display: none;
+    }
+    #couleur_contour {
+      display: none;
+    }
+
+    .a_propos_titre {
+      color:#4298f5;
+      font-family: system-ui;
+      text-align: center;
+      font-size:50px;
+      font-weight: bold;
+      margin-top:150px;
+      margin-bottom:10px; 
+      padding-top:10px; 
+      padding-bottom:10px;
+    }
+
+    .a_propos {
+        margin-top:70px;
+        font-family: system-ui;
+        margin-left:20px;
+        margin-right:20px;
+        text-align:center;
+        font-size: 25px;
+    }
+
+    .telechargement_donnees {
+      margin-top: 20px;
+      font-family: system-ui;
+    }
+    #telechargement_donnees_brutes {
+      margin-left:5px;
+    }
